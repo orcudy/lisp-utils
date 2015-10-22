@@ -1,4 +1,12 @@
 ;; [input]
+;;   number - any number
+;; [output]
+;;  absolute value of number
+(defun abs (number)
+  (if (>= number 0) number (- number))
+)
+
+;; [input]
 ;;   list - list: (x ... nil ... x)
 ;; [output]
 ;;   list where top level elements that are nil have been removed: (x ... x)
@@ -10,6 +18,22 @@
     (t (if (null (first list))
 	(remove-nil (rest list))
 	(cons (first list) (remove-nil (rest list)))))
+  )
+)
+
+;; [input]
+;;   list - top level list
+;;   value - value to remove from list
+;; [output]
+;;   list where all instances of value have been removed from list
+(defun remove (list value)
+  (cond
+    ; Base case: list or value is empty
+    ((or (null list) (null value)) nil)
+    ; Base case: list is atom
+    ((atom list) (if (equal list value) nil (list list)))
+    ; Recursive case
+    (t (append (remove (first list) value) (remove (rest list) value)))
   )
 )
 
@@ -46,23 +70,6 @@
 )
 
 ;; [input]
-;;   grid - list of lists: ( (...) ... (...) )
-;;   x - index of element in grid (left column is 0)
-;;   y - index of element in grid (top row is 0)
-;; [output]
-;;   value of object at location (x, y) in grid   
-(defun extract-grid-value (grid x y)
-  (cond 
-    ; Base case: grid = nil, x = nil, y = nil, x < 0, y < 0
-    ((or (null grid) (null x) (null y) (> 0 x) (> 0 y)) nil)
-    ; Base case: y = 0
-    ((= y 0) (extract-list-value (first grid) x))
-    ; Recursive case
-    (t (extract-grid-value (rest grid) x (- y 1)))
-  )
-)
-
-;; [input]
 ;;   list - top level list
 ;;   index - 0 indexed location in list
 ;; [output]
@@ -75,28 +82,6 @@
     ((= index 0) (first list))
     ; Recursive case
     (t (extract-list-value (rest list) (- index 1)))
-  )
-)
-
-;; [input]
-;;   grid - list of lists: ( (...) ... (...) )
-;;   x - index of element in grid (left column is 0)
-;;   y - index of element in grid (top row is 0)
-;;   symbol - to be placed in grid at location x, y
-;; [output]
-;;   grid where object at location (x, y) has been replaced with symbol
-(defun place-in-grid (grid x y symbol)  
-  (cond     
-    ; Base case: grid empty
-    ((null grid) nil)
-    ; Base case: 1 x 1 grid
-    ((atom (first grid)) (list element))
-    ; Recursive case
-    (t (if (= y 0)
-	   (cons (place-in-list (first grid) x symbol) (rest grid))
-	   (cons (first grid) (place-in-grid (rest grid) x (- y 1) symbol))
-       )
-    )
   )
 )
 
@@ -117,3 +102,18 @@
   )
 )
 
+;; [input]
+;;   list - list: ( x ... x )
+;;   value - value to search for in list
+;; [output]
+;;   number of times value occurs in list
+(defun occurrences-in-list (list value)
+  (cond
+    ; Base case: list or value empty
+    ((or (null list) (null value)) 0)
+    ; Base case: list is atom
+    ((atom list) (if (equal list value) 1 0))
+    ; Recursive case
+    (t (+ (occurrences-in-list (first list) value) (occurrences-in-list (rest list) value)))
+  )
+)
